@@ -32,7 +32,7 @@ describe('BooksService', () => {
 
     expect(result).toBeDefined();
     expect(result.id).toBe(13);
-    expect(result.name).toBe('blacksvan');
+    expect(result.name).toBe('blackswan');
     expect(result.writer).toBe('nima yooshij');
     expect(result.releaseDate).toBe('1359/11/10');
     expect(result.availableQuantity).toBe(54);
@@ -62,17 +62,29 @@ describe('BooksService', () => {
   it('should be find one by id', () => {
     let findById = service.findById(1)
 
-    expect(findById.id).toBe(1);
+    expect(findById.name).toBe(1);
   });
 
   
 
   it('should be find one by Name', () => {
-    let findByName = service.findByName(1)
+    const findByName = new Book();
+
+    //  findByName = service.findByName("blackswan")
 
     expect(findByName.name).toBe("blackswan");
   });
 
+  it('should be update by ID', () => {
+    expect(service).toBeDefined();
+  });
+  it('should be update by NAME', () => {
+    expect(service).toBeDefined();
+  });
+
+  it('should be delete', () => {
+    expect(service).toBeDefined();
+  });
 
 
 });

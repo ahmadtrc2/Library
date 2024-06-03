@@ -18,9 +18,15 @@ export class BooksController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.booksService.findOne(+id);
+  findById(@Param('id') id: string) {
+    return this.booksService.findById(+id);
   }
+
+  @Get(':name')
+  findByName(@Param('name') name: string) {
+    return this.booksService.findByName(name);
+  }
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
