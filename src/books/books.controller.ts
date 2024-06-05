@@ -28,9 +28,9 @@ export class BooksController {
   }
 
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.booksService.update(+id, updateBookDto);
+  @Patch(':IdOrName')
+  update(@Param('IdOrName') IdOrName: string, @Body() updateBookDto: UpdateBookDto) {
+    return this.booksService.update(IdOrName, updateBookDto);
   }
 
   @Delete(':id')

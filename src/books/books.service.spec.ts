@@ -75,15 +75,21 @@ describe('BooksService', () => {
     expect(findByName.name).toBe("blackswan");
   });
 
-  it('should be update by ID', () => {
-    expect(service).toBeDefined();
+  it('should be update by Name', () => {
+    
+    service.update("blackswan",{name:"1984"})
+    expect(service.findByName("1984")).not.toBe(null);
   });
-  it('should be update by NAME', () => {
-    expect(service).toBeDefined();
+  
+  it('should be update by Id', () => {
+    service.update(3,{availableQuantity:10})
+    let book = service.findById(3)
+    expect(book.availableQuantity).toBe(10);
   });
 
   it('should be delete', () => {
-    expect(service).toBeDefined();
+    service.remove(2);
+    expect(service.findById(2)).toBe(null);
   });
 
 

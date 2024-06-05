@@ -38,7 +38,7 @@ export class BooksService {
 
   }
 
-  async update(IdOrName: number, updateBookDto: any) {
+  async update(IdOrName: any, updateBookDto: any) {
     let book: Book;
     if (typeof IdOrName === 'number') {
       book = await this.booksRepository.findOne({ where: { id: IdOrName } });
