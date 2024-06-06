@@ -3,13 +3,28 @@ import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { Book } from './entities/book.entity';
 import { async } from 'rxjs';
+import { Repository } from 'typeorm';
+import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { BooksModule } from './books.module';
 
 describe('BooksService', () => {
   let service: BooksService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [BooksService],
+      imports: [BooksModule, TypeOrmModule.forRoot({
+    type: 'sqlite',
+    database: 'database.sqlite',
+    entities: [Book],
+    synchronize: true,
+  })
+
+  ],
+      providers: [BooksService,{
+        provide: getRepositoryToken(Book),
+        useValue: {},
+      }
+    ],
     }).compile();
 
     service = module.get<BooksService>(BooksService);
@@ -20,7 +35,7 @@ describe('BooksService', () => {
   });
 
   it('should be create book', async() => {
-    let BookDto
+    let BookDto = new CreateBookDto();
 
     BookDto.id=13
     BookDto.name=`blackswan`
@@ -40,7 +55,8 @@ describe('BooksService', () => {
 
   it('we create book for sample', () => {
     let i=0
-    let BookDto
+    let BookDto = new CreateBookDto();
+
     while(i<10){
       BookDto.id=i
       BookDto.name=`name${i}`
@@ -59,37 +75,41 @@ describe('BooksService', () => {
     expect(find).not.toBe(null);
   });
 
-  it('should be find one by id', () => {
-    let findById = service.findById(1)
-
-    expect(findById.name).toBe(1);
+  it('should be find one by id', async() => {
+    const id=13
+    let findById =await service.findById(id)
+    
+    expect(findById).toEqual({ id: 13, name: 'blackswan', writer:`nima yooshij`,
+    releaseDate:`1359/11/10`,
+    availableQuantity:54})
   });
 
   
 
-  it('should be find one by Name', () => {
-    const findByName = new Book();
+  it('should be find one by Name', async() => {
 
-    //  findByName = service.findByName("blackswan")
+    let findByName =await service.findByName("blackswan")
 
-    expect(findByName.name).toBe("blackswan");
+    expect(findByName).toEqual({ id: 13, name: 'blackswan', writer:`nima yooshij`,
+    releaseDate:`1359/11/10`,
+    availableQuantity:54})
   });
 
-  it('should be update by Name', () => {
+  it('should be update by Name', async() => {
     
     service.update("blackswan",{name:"1984"})
     expect(service.findByName("1984")).not.toBe(null);
   });
   
-  it('should be update by Id', () => {
-    service.update(3,{availableQuantity:10})
-    let book = service.findById(3)
-    expect(book.availableQuantity).toBe(10);
+  it('should be update by Id', async() => {
+    service.update(13,{availableQuantity:10})
+    let book = await  service.findById(13)
+    expect(book.availableQuantity).toEqual(10);
   });
 
-  it('should be delete', () => {
-    service.remove(2);
-    expect(service.findById(2)).toBe(null);
+  it('should be delete', async() => {
+    await service.remove(2);
+    expect(await service.findById(2)).toBe(null);
   });
 
 

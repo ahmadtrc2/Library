@@ -12,46 +12,59 @@ export class BooksService {
     private booksRepository: Repository<Book>,
   ) {}
   
-  create(createBookDto: CreateBookDto):Book {
+  async create(createBookDto: CreateBookDto):Promise<Book> {
     const book = new Book();
 
-    book.id=createBookDto.id,
-    book.name=createBookDto.name,
-    book.writer=createBookDto.writer,
-    book.releaseDate=createBookDto.releaseDate,
-    book.availableQuantity=createBookDto.availableQuantity,
-    console.log("-----------",book)
-    return book;
+    book.id=createBookDto.id;
+    book.name=createBookDto.name;
+    book.writer=createBookDto.writer;
+    book.releaseDate=createBookDto.releaseDate;
+    book.availableQuantity=createBookDto.availableQuantity;
+    //console.log("-----------",book);
+    return await this.booksRepository.save(book);
   }
 
-  findAll() {
+  async findAll() {
+    // console.log("+--+-+-+--+-+-+--+----+-+-+-+-+----+---+-find Alllllllll",await this.booksRepository.find())
     
-    return this.booksRepository.find();
+    return await this.booksRepository.find();
   }
 
-  findById(id: number):any {
+  async findById(id: number):Promise<any> {
+    let book 
+    book =await this.booksRepository.findOneBy({id})
     return this.booksRepository.findOneBy({id});
   }
 
-    async findByName(name: string): Promise<Book>  {
-    return await this.booksRepository.findOne({where :{name}});
+    async findByName(name: string): Promise<any>  {
+      let book = await this.booksRepository.findOneBy({name});
+    return book;
 
   }
 
   async update(IdOrName: any, updateBookDto: any) {
-    let book: Book;
+    let book: Book | undefined;
+    let bookId: number ;
+  
     if (typeof IdOrName === 'number') {
-      book = await this.booksRepository.findOne({ where: { id: IdOrName } });
+      bookId = IdOrName;
     } else if (typeof IdOrName === 'string') {
-      book = await this.booksRepository.findOne({ where: { name: IdOrName } });
+      const bookByName = await this.booksRepository.findOne({ where: { name: IdOrName } });
+      if (bookByName) {
+        bookId = bookByName.id;
+      }
     }
   
-    if (!book) {
-      throw new Error('Book not found');
+    if (!bookId) {
+      console.log("Book not found");
+      return null; // Return null or handle the error as needed
     }
   
-    await this.booksRepository.update(book.id, updateBookDto);
-    return this.booksRepository.findOne({ where: { id: book.id } });
+
+  
+    await this.booksRepository.update(bookId, updateBookDto);
+
+    return this.booksRepository.findOne({ where: { id: bookId } });
   }
   
 

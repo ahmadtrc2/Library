@@ -6,13 +6,13 @@ export class Book {
 id:number
 
 @Column()
-public name:any;
+ public name:string;;
 
 @Column()
-public writer:string;
+ writer:string;
 
 @Column()
-public releaseDate:string;
+ releaseDate:string;
 
 @Column()
 public availableQuantity:number;
