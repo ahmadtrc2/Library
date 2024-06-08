@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Translator } from "./translator.entity";
+import { Writer } from "./writer.entity";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 
 @Entity()
 export class Book {
@@ -7,14 +9,14 @@ id:number
 
 @Column()
  public name:string;;
-
-@Column()
- writer:string;
-
-@Column()
+ 
+ @Column()
  releaseDate:string;
-
-@Column()
-public availableQuantity:number;
+ 
+ @Column()
+ public availableQuantity:number;
+ 
+@ManyToOne(() => Writer, (writer) => writer.books, /*{ nullable: true }*/)
+   writer: Writer;
 
 }

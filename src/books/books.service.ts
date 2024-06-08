@@ -17,7 +17,7 @@ export class BooksService {
 
     book.id=createBookDto.id;
     book.name=createBookDto.name;
-    book.writer=createBookDto.writer;
+    // book.writer=createBookDto.writer;
     book.releaseDate=createBookDto.releaseDate;
     book.availableQuantity=createBookDto.availableQuantity;
     //console.log("-----------",book);
