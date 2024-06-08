@@ -4,10 +4,10 @@ import { AppService } from './app.service';
 import { BooksModule } from './books/books.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Book } from './books/entities/book.entity';
-import { Writer } from './books/entities/writer.entity';
-import { Translator } from './books/entities/translator.entity';
 import { WriterModule } from './writer/writer.module';
 import { TranslatorModule } from './translator/translator.module';
+import { Writer } from './writer/entities/writer.entity';
+import { Translator } from './translator/entities/translator.entity';
 @Module({
   imports: [BooksModule, TypeOrmModule.forRoot({
     type: 'sqlite',

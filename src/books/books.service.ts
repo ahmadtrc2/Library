@@ -2,14 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Book } from './entities/book.entity';
-import { InjectRepository } from '@nestjs/typeorm';
+import { getRepositoryToken, InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Writer } from '../writer/entities/writer.entity';
 @Injectable()
 export class BooksService {
 
   constructor(
     @InjectRepository(Book)
     private booksRepository: Repository<Book>,
+    // private writerRepository: Repository<Writer>,
+    // @InjectRepository(Writer)
+    // private writerRepository: Repository<Writer>,
+
   ) {}
   
   async create(createBookDto: CreateBookDto):Promise<Book> {
@@ -66,9 +71,22 @@ export class BooksService {
 
     return this.booksRepository.findOne({ where: { id: bookId } });
   }
-  
 
   async remove(id: number) {
     await this.booksRepository.delete(id);
   }
+
+  async asignById(bookId:number,writerId:number){
+    const book = await this.booksRepository.findOne({ where: { id: bookId } });
+    // const writer = await this.writerRepository.findOne({ where: { id: writerId } });
+
+    // if (!book || !writer) {
+    //   throw new Error('Book or Writer not found');
+    // }
+
+    // book.writer = writer;
+    return this.booksRepository.save(book);
+
+  }
+
 }

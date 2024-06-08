@@ -19,7 +19,7 @@ export class TranslatorController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.translatorService.findOne(+id);
+    return this.translatorService.findById(+id);
   }
 
   @Patch(':id')

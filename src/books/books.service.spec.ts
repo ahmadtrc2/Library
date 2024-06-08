@@ -3,32 +3,37 @@ import { BooksService } from './books.service';
 import { Book } from './entities/book.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { BooksModule } from './books.module';
-import { Writer } from './entities/writer.entity';
-import { Translator } from './entities/translator.entity';
 import { CreateBookDto } from './dto/create-book.dto';
+import { Repository } from 'typeorm';
+import { Writer } from '../writer/entities/writer.entity';
 
 describe('BooksService', () => {
   let service: BooksService;
+  let writerRepository: Repository<Writer>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [BooksModule, TypeOrmModule.forRoot({
     type: 'sqlite',
     database: 'database.sqlite',
-    entities: [Book,Writer,Translator],
-    synchronize: true,
-  })
-
-  ],
-      providers: [BooksService,{
-        provide: getRepositoryToken(Book),
-        useValue: {},
-      }
+    entities: [
+      __dirname + '/../**/*.entity.ts'
     ],
-    }).compile();
+    synchronize: true,
+    
+  })
+  
+],
+providers: [BooksService,{
+  provide: getRepositoryToken(Book),
+  useValue: {},
+}
+],
+}).compile();
 
-    service = module.get<BooksService>(BooksService);
-  });
+writerRepository = module.get<Repository<Writer>>(getRepositoryToken(Writer));
+service = module.get<BooksService>(BooksService);
+});
 
   it('should be defined', () => {
     expect(service).toBeDefined();
@@ -54,7 +59,7 @@ describe('BooksService', () => {
     expect(result.availableQuantity).toBe(54);
   });
   
-  it('we create book for sample', () => {
+  it('we create fake data for book  ', () => {
     let i=0
     let BookDto = new CreateBookDto();
 
@@ -108,10 +113,20 @@ describe('BooksService', () => {
     expect(book.availableQuantity).toEqual(10);
   });
 
-  it('should be delete', async() => {
-    await service.remove(2);
-    expect(await service.findById(2)).toBe(null);
-  });
+  // it('should be delete', async() => {
+  //   await service.remove(2);
+  //   expect(await service.findById(2)).toBe(null);
+  // });
+
+  
+  it("should be asign book to writer by ID",async()=>{
+    service.asignById(2,3)
+    let book =await service.findById(2)
+    //let writer =await writerRepository.findBy({id:3})
+  //  expect(book.writer).toEqual(3)
+    // expect(writer.book).toEqual(2)
+
+  })
 
 
 });

@@ -1,5 +1,4 @@
-import { Translator } from "./translator.entity";
-import { Writer } from "./writer.entity";
+import { Writer } from "../../writer/entities/writer.entity";
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 
 @Entity()

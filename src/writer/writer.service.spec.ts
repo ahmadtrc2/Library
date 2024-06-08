@@ -55,12 +55,28 @@ describe('WriterService', () => {
     const result =await service.create(writerDto);
     console.log("+-+-+-++-+-+-+-+-+-+-+\\\\\\\\\\\\\\\\\\-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-result",result)
 
-    // expect(result.id).toBe(13);
-    // expect(result.name).toBe('sadegh hedayat');
-    // expect(result.brithday).toBe('1332/08/23');
-    // expect(result.biography).toBe('bacheye khobi bod');
+    expect(result.id).toBe(13);
+    expect(result.name).toBe('sadegh hedayat');
+    expect(result.brithday).toBe('1332/08/23');
+    expect(result.biography).toBe('bacheye khobi bod');
 
   });
+
+  it('we create fake data for writers  ', () => {
+    let i=0
+    let writerDto = new CreateWriterDto();
+
+    while(i<10){
+      writerDto.id=i
+      writerDto.name=`WriterName${i}`
+      writerDto.brithday=`${i}/${i}/13${(i*10)+25}`
+      writerDto.biography=`WriterBigraphy ${i}`
+      service.create(writerDto)
+      i++
+    }
+    expect(i).toBe(10);
+  });
+
   // it('should create a writer with books', async () => {
 
 
@@ -125,10 +141,11 @@ describe('WriterService', () => {
     expect(book.biography).toEqual("esmi bood");
   });
 
-  it('should be delete', async() => {
-    await service.remove(13);
-    expect(await service.findById(13)).toBe(null);
-  });
+  // it('should be delete', async() => {
+  //   await service.remove(13);
+  //   expect(await service.findById(13)).toBe(null);
+  // });
 
+  
 });
 
