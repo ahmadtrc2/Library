@@ -12,8 +12,8 @@ export class BooksService {
     @InjectRepository(Book)
     private booksRepository: Repository<Book>,
     // private writerRepository: Repository<Writer>,
-    // @InjectRepository(Writer)
-    // private writerRepository: Repository<Writer>,
+    @InjectRepository(Writer)
+    private writerRepository: Repository<Writer>,
 
   ) {}
   
@@ -22,15 +22,12 @@ export class BooksService {
 
     book.id=createBookDto.id;
     book.name=createBookDto.name;
-    // book.writer=createBookDto.writer;
     book.releaseDate=createBookDto.releaseDate;
     book.availableQuantity=createBookDto.availableQuantity;
-    //console.log("-----------",book);
     return await this.booksRepository.save(book);
   }
 
   async findAll() {
-    // console.log("+--+-+-+--+-+-+--+----+-+-+-+-+----+---+-find Alllllllll",await this.booksRepository.find())
     
     return await this.booksRepository.find();
   }
@@ -78,15 +75,27 @@ export class BooksService {
 
   async asignById(bookId:number,writerId:number){
     const book = await this.booksRepository.findOne({ where: { id: bookId } });
-    // const writer = await this.writerRepository.findOne({ where: { id: writerId } });
+    const writer = await this.writerRepository.findOne({ where: { id: writerId } });
 
-    // if (!book || !writer) {
-    //   throw new Error('Book or Writer not found');
-    // }
+    if (!book || !writer) {
+          console.log("==============================================================Book or Writer not found",bookId,writerId)
 
-    // book.writer = writer;
+      throw new Error('Book or Writer not found');
+    }
+
+    book.writer = writer;
     return this.booksRepository.save(book);
 
   }
+
+  async findRelation(): Promise<Book[]> {  
+     return this.booksRepository
+    .createQueryBuilder("book")
+    .leftJoinAndSelect("book.writer", "writer")
+    .where("book.writer IS NOT NULL")
+    .getMany();
+
+  }
+
 
 }

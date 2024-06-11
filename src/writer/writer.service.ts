@@ -14,8 +14,8 @@ export class WriterService {
   constructor(
     @InjectRepository(Writer)
     private writerRepository: Repository<Writer>,
-    // @InjectRepository(Book)
-    // private booksRepository: Repository<Book>,
+    @InjectRepository(Book)
+    private booksRepository: Repository<Book>,
   ) {}
   
   async create(createWriterDto: CreateWriterDto):Promise<Writer> {
@@ -69,7 +69,6 @@ export class WriterService {
     }
   
 
-  
     await this.writerRepository.update(bookId, updateBookDto);
 
     return this.writerRepository.findOne({ where: { id: bookId } });

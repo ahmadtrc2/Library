@@ -6,6 +6,7 @@ import { CreateWriterDto } from './dto/create-writer.dto';
 import { Writer } from './entities/writer.entity';
 import { WriterModule } from './writer.module';
 import { WriterService } from './writer.service';
+import { faker } from '@faker-js/faker'
 
 describe('WriterService', () => {
   let service: WriterService;
@@ -16,7 +17,7 @@ describe('WriterService', () => {
     const module: TestingModule = await Test.createTestingModule({
       
       imports: [WriterModule,
-        TypeOrmModule.forFeature([WriterModule]),
+        TypeOrmModule.forFeature([WriterModule,Book]),
         TypeOrmModule.forRoot({
         type: 'sqlite',
         database: 'database.sqlite',
@@ -45,7 +46,7 @@ describe('WriterService', () => {
     let writerDto = new CreateWriterDto();
    let books= await bookRepository.find()
    console.log("+-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-books",books)
-    writerDto.id=13
+    writerDto.id=130
     writerDto.name=`sadegh hedayat`
     writerDto.brithday=`1332/08/23`
     writerDto.biography="bacheye khobi bod"
@@ -55,7 +56,7 @@ describe('WriterService', () => {
     const result =await service.create(writerDto);
     console.log("+-+-+-++-+-+-+-+-+-+-+\\\\\\\\\\\\\\\\\\-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-result",result)
 
-    expect(result.id).toBe(13);
+    expect(result.id).toBe(130);
     expect(result.name).toBe('sadegh hedayat');
     expect(result.brithday).toBe('1332/08/23');
     expect(result.biography).toBe('bacheye khobi bod');
@@ -66,44 +67,16 @@ describe('WriterService', () => {
     let i=0
     let writerDto = new CreateWriterDto();
 
-    while(i<10){
+    while(i<100){
       writerDto.id=i
-      writerDto.name=`WriterName${i}`
-      writerDto.brithday=`${i}/${i}/13${(i*10)+25}`
-      writerDto.biography=`WriterBigraphy ${i}`
+      writerDto.name=faker.person.fullName()
+      writerDto.brithday=faker.date.birthdate().toString()
+      writerDto.biography=faker.person.bio()
       service.create(writerDto)
       i++
     }
-    expect(i).toBe(10);
+    expect(i).toBe(100);
   });
-
-  // it('should create a writer with books', async () => {
-
-
-  //   const writer = writerRepository.create({
-  //     name: 'John Doe',
-  //     brithday: '1990-01-01',
-  //     biography: 'An amazing writer',
-  //     books: [
-  //       {
-  //         name: 'Book 1',
-  //         releaseDate: '2020-01-01',
-  //         availableQuantity: 5,
-  //       },
-  //       {
-  //         name: 'Book 2',
-  //         releaseDate: '2021-01-01',
-  //         availableQuantity: 3,
-  //       },
-  //     ],
-  //   });
-
-  //   await writerRepository.save(writer);
-  //   const writers = await writerRepository.find({ relations: ['books'] });
-
-  //   expect(writers.length).toBeGreaterThan(0);
-  //   expect(writers[0].books.length).toBe(2);
-  // });
 
   it('should be find all records', () => {
     let find = service.findAll()
@@ -112,10 +85,10 @@ describe('WriterService', () => {
   });
 
   it('should be find one by id', async() => {
-    const id=13
+    const id=130
     let findById =await service.findById(id)
     
-    expect(findById).toEqual({ id: 13, name: 'sadegh hedayat',
+    expect(findById).toEqual({ id: 130, name: 'sadegh hedayat',
     biography: "bacheye khobi bod",
      brithday: "1332/08/23",})
   });
@@ -124,7 +97,7 @@ describe('WriterService', () => {
 
     let findByName =await service.findByName("sadegh hedayat")
 
-    expect(findByName).toEqual({ id: 13, name: 'sadegh hedayat',
+    expect(findByName).toEqual({ id: 130, name: 'sadegh hedayat',
       biography: "bacheye khobi bod",
        brithday: "1332/08/23",})
 
@@ -136,14 +109,14 @@ describe('WriterService', () => {
     expect(service.findByName("Simin daneshvar")).not.toBe(null);
   });
   it('should be update by Id', async() => {
-    service.update(13,{biography:"esmi bood"})
-    let book = await  service.findById(13)
+    service.update(130,{biography:"esmi bood"})
+    let book = await  service.findById(130)
     expect(book.biography).toEqual("esmi bood");
   });
 
   // it('should be delete', async() => {
-  //   await service.remove(13);
-  //   expect(await service.findById(13)).toBe(null);
+  //   await service.remove(130);
+  //   expect(await service.findById(130)).toBe(null);
   // });
 
   

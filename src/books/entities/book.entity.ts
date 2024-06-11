@@ -16,6 +16,6 @@ id:number
  public availableQuantity:number;
  
 @ManyToOne(() => Writer, (writer) => writer.books, /*{ nullable: true }*/)
-   writer: Writer;
+ writer: Writer;
 
 }

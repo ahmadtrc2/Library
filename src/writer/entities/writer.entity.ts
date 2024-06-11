@@ -3,12 +3,16 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Writer{
+  // [x: string]: Book;
 
 @PrimaryGeneratedColumn()
 id:number
 
+// @Column()
+// name:string
 @Column()
 name:string
+
 
 @Column()
 brithday:string
@@ -19,5 +23,6 @@ biography: string;
 
 @OneToMany(() => Book, book => book.writer,/*{ nullable: true }*/)
 books: Book[];
+  writer: Book;
 }
 

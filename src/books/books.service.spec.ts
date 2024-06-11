@@ -1,19 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
 import { Book } from './entities/book.entity';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { getRepositoryToken, InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { BooksModule } from './books.module';
 import { CreateBookDto } from './dto/create-book.dto';
 import { Repository } from 'typeorm';
 import { Writer } from '../writer/entities/writer.entity';
+import { faker } from '@faker-js/faker'
 
 describe('BooksService', () => {
   let service: BooksService;
   let writerRepository: Repository<Writer>;
 
   beforeEach(async () => {
+    
     const module: TestingModule = await Test.createTestingModule({
-      imports: [BooksModule, TypeOrmModule.forRoot({
+      imports: [BooksModule,TypeOrmModule.forFeature([Book,Writer]) ,TypeOrmModule.forRoot({
     type: 'sqlite',
     database: 'database.sqlite',
     entities: [
@@ -41,20 +43,16 @@ service = module.get<BooksService>(BooksService);
   it('should be create book', async() => {
     let BookDto = new CreateBookDto();
     
-    BookDto.id=13
+    BookDto.id=9999
     BookDto.name=`blackswan`
     BookDto.writer=`nima yooshij`
-    // BookDto.translator="abas sahagi"
     BookDto.releaseDate=`1359/11/10`
     BookDto.availableQuantity=54
-    //در این محل نویسنده مقدار دهی نمیشد و این مشکل باید حل شود
     const result =await service.create(BookDto);
-    console.log("-+-+-+--++++-+++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+result+",result)
     expect(result).toBeDefined();
-    expect(result.id).toBe(13);
+    expect(result.id).toBe(9999);
     expect(result.name).toBe('blackswan');
-    // expect(result.writer).toBe('nima yooshij');
-    // expect(result.translator).toBe('abas sahagi');
+    
     expect(result.releaseDate).toBe('1359/11/10');
     expect(result.availableQuantity).toBe(54);
   });
@@ -62,17 +60,17 @@ service = module.get<BooksService>(BooksService);
   it('we create fake data for book  ', () => {
     let i=0
     let BookDto = new CreateBookDto();
-
-    while(i<10){
+    const randomName = faker.person.fullName();
+    while(i<300){
       BookDto.id=i
-      BookDto.name=`name${i}`
+      BookDto.name=faker.person.lastName()+"book";
       BookDto.writer=`writerName${i*111}`
-      BookDto.releaseDate=`${i}/${i}/13${i*10}`
-      BookDto.availableQuantity=i*12
+      BookDto.releaseDate=faker.date.past().toString()
+      BookDto.availableQuantity=faker.number.int()
       service.create(BookDto)
       i++
     }
-    expect(i).toBe(10);
+    expect(i).toBe(300);
   });
 
   it('should be find all records', () => {
@@ -82,10 +80,10 @@ service = module.get<BooksService>(BooksService);
   });
 
   it('should be find one by id', async() => {
-    const id=13
+    const id=9999
     let findById =await service.findById(id)
     
-    expect(findById).toEqual({ id: 13, name: 'blackswan',/* writer:`nima yooshij`,*/
+    expect(findById).toEqual({ id: 9999, name: 'blackswan',/* writer:`nima yooshij`,*/
     releaseDate:`1359/11/10`,
     availableQuantity:54})
   });
@@ -96,7 +94,7 @@ service = module.get<BooksService>(BooksService);
 
     let findByName =await service.findByName("blackswan")
 
-    expect(findByName).toEqual({ id: 13, name: 'blackswan',/* writer:`nima yooshij`,*/
+    expect(findByName).toEqual({ id: 9999, name: 'blackswan',/* writer:`nima yooshij`,*/
     releaseDate:`1359/11/10`,
     availableQuantity:54})
   });
@@ -108,8 +106,8 @@ service = module.get<BooksService>(BooksService);
   });
   
   it('should be update by Id', async() => {
-    service.update(13,{availableQuantity:10})
-    let book = await  service.findById(13)
+    service.update(9999,{availableQuantity:10})
+    let book = await  service.findById(9999)
     expect(book.availableQuantity).toEqual(10);
   });
 
@@ -122,10 +120,28 @@ service = module.get<BooksService>(BooksService);
   it("should be asign book to writer by ID",async()=>{
     service.asignById(2,3)
     let book =await service.findById(2)
-    //let writer =await writerRepository.findBy({id:3})
-  //  expect(book.writer).toEqual(3)
-    // expect(writer.book).toEqual(2)
+    let writer =await writerRepository.findBy({})
 
+  //  expect(book.writerId).toEqual(3)
+    // expect(writer).toEqual(2)
+
+  })
+
+  it("should be asign book to writer by random",async()=>{
+
+    for(let i =1; i<100;i++){
+      for(let j =3; j>0;j--){
+        service.asignById((i*3)-j,i)
+      }
+    }
+
+  //  expect(book.writer).toEqual(3)
+  //   expect(writer).toEqual(2)
+
+  })
+  it("should find relation",async()=>{
+
+    // console.log("==============================================================service.findRelation()",await service.findRelation())
   })
 
 
