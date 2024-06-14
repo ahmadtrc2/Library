@@ -140,9 +140,21 @@ service = module.get<BooksService>(BooksService);
 
   })
   it("should find relation",async()=>{
-
-    // console.log("==============================================================service.findRelation()",await service.findRelation())
+    service.findRelation()
+    //  console.log("==============================================================service.findRelation()",await service.findRelation())
+  })
+  it("should find FIRSTbOOK",async()=>{
+    
+    // console.log("==============================================================findFirstBook()",await service.findFirstBook())
   })
 
+  it("should find Middle Book",async()=>{
+    
+    // console.log("==============================================================findMiddleBook()",await service.findMiddleBook())
+  })
 
+  it("should find Middle Book",async()=>{
+    
+    // console.log("==============================================================findSecondLastBook()",await service.findSecondLastBook())
+  })
 });

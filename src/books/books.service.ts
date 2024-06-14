@@ -5,6 +5,7 @@ import { Book } from './entities/book.entity';
 import { getRepositoryToken, InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Writer } from '../writer/entities/writer.entity';
+import { async } from 'rxjs';
 @Injectable()
 export class BooksService {
 
@@ -74,16 +75,23 @@ export class BooksService {
   }
 
   async asignById(bookId:number,writerId:number){
-    const book = await this.booksRepository.findOne({ where: { id: bookId } });
-    const writer = await this.writerRepository.findOne({ where: { id: writerId } });
+    const book = await this.booksRepository.findOne({ where: { id: bookId }, relations: ['writer'] });
+    const writer = await this.writerRepository.findOne({ where: { id: writerId }, relations: ['books']});
 
     if (!book || !writer) {
           console.log("==============================================================Book or Writer not found",bookId,writerId)
 
       throw new Error('Book or Writer not found');
     }
+    // console.log("==============================================================writer.books",writer.books)
 
     book.writer = writer;
+    if (!writer.books) {
+      writer.books = [];
+    }
+
+    writer.books.push(book)
+    await this.writerRepository.save(writer);
     return this.booksRepository.save(book);
 
   }
@@ -97,5 +105,34 @@ export class BooksService {
 
   }
 
+  async findFirstBook():Promise<Book>{
+    return this.booksRepository.createQueryBuilder('book')
+    .orderBy('book.id', 'ASC')
+    .limit(1)
+    .getOne()
+    
+  }
+
+  async findMiddleBook():Promise<Book>{
+    const totalBooks = await this.booksRepository.count();
+    const middleIndex = Math.floor(totalBooks / 2);
+
+    return this.booksRepository.createQueryBuilder('book')
+    .orderBy('book.id','ASC')
+    .skip(middleIndex-1)
+    .limit(1)
+    .getOne();
+  
+  }
+
+  async findSecondLastBook(): Promise<Book> {
+    return this.booksRepository.createQueryBuilder('book')
+      .orderBy('book.id', 'DESC')
+      .skip(1)
+      .take(1) 
+      .getOne();
+  }
+
+ 
 
 }

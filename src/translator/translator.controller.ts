@@ -2,7 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TranslatorService } from './translator.service';
 import { CreateTranslatorDto } from './dto/create-translator.dto';
 import { UpdateTranslatorDto } from './dto/update-translator.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('users')
 @Controller('translator')
 export class TranslatorController {
   constructor(private readonly translatorService: TranslatorService) {}

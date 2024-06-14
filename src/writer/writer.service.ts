@@ -77,4 +77,9 @@ export class WriterService {
   async remove(id: number) {
     await this.writerRepository.delete(id);
   }
+
+//  async asignRelation
+//   async findBookByWriterName(writer:string){
+//     // let this
+//   }
 }
