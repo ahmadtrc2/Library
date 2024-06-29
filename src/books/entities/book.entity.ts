@@ -9,8 +9,8 @@ id:number
 @Column()
  public name:string;;
  
- @Column()
- releaseDate:string;
+ @Column({ type: 'date' })
+ releaseDate:Date;//change date type
  
  @Column()
  public availableQuantity:number;

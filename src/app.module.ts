@@ -8,8 +8,11 @@ import { WriterModule } from './writer/writer.module';
 import { TranslatorModule } from './translator/translator.module';
 import { Writer } from './writer/entities/writer.entity';
 import { Translator } from './translator/entities/translator.entity';
+import { winstonConfig } from './winstone.config';
+import { WinstonModule } from 'nest-winston';
 @Module({
-  imports: [BooksModule, TypeOrmModule.forRoot({
+  imports: [BooksModule,WinstonModule.forRoot(winstonConfig),
+     TypeOrmModule.forRoot({
     type: 'sqlite',
     database: 'database.sqlite',
     entities: [Book,Writer,Translator],

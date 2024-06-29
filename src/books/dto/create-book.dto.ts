@@ -18,10 +18,11 @@ export class CreateBookDto {
     
 
     @ApiProperty()
-    releaseDate:string;
+    releaseDate:Date;
     
     @ApiProperty()
     availableQuantity:number;
+  BookDto: any;
     
 
 }

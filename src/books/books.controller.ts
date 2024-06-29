@@ -25,7 +25,7 @@ export class BooksController {
     return this.booksService.findById(+id);
   }
 
-  @Get(':name')
+  @Get('/name/:name')
   findByName(@Param('name') name: string) {
     return this.booksService.findByName(name);
   }
